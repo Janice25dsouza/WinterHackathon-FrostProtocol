@@ -19,10 +19,10 @@ This project uses smart contracts to enforce intent-based fund control in hierar
 ##  Setup Instructions
 ---
 ##  Team Members
-Janice Carmel D'souza
-Jeswin Gerald D'souza
-Nikitha D'souza
-Johan Colaco
+-Janice Carmel D'souza
+-Jeswin Gerald D'souza
+-Nikitha D'souza
+-Johan Colaco
 ---
 
 
