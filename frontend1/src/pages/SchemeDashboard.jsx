@@ -7,11 +7,13 @@ import { addRequest } from "../data/schemeRequests";
 import {
   getBeneficiaryRequests,
   approveBeneficiary,
-  rejectBeneficiary
+  rejectBeneficiary,
+  markDisbursed
 } from "../data/beneficiaryRequests";
 
 function SchemeDashboard() {
-  /* ---------------- CENTRAL FUND REQUEST ---------------- */
+
+  /* ================= CENTRAL FUND REQUEST ================= */
   const [purpose, setPurpose] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -33,17 +35,27 @@ function SchemeDashboard() {
     setAmount("");
   }
 
-  /* ---------------- BENEFICIARY FLOW ---------------- */
+  /* ================= BENEFICIARY FLOW ================= */
   const [requests, setRequests] = useState(getBeneficiaryRequests());
+
+  function refresh() {
+    setRequests([...getBeneficiaryRequests()]);
+  }
 
   function approve(index) {
     approveBeneficiary(index);
-    setRequests([...getBeneficiaryRequests()]);
+    refresh();
   }
 
   function reject(index) {
     rejectBeneficiary(index);
-    setRequests([...getBeneficiaryRequests()]);
+    refresh();
+  }
+
+  function allocate(index) {
+    markDisbursed(index);
+    refresh();
+    alert("Funds allocated to beneficiary");
   }
 
   return (
@@ -66,7 +78,7 @@ function SchemeDashboard() {
           onChange={(e) => setAmount(e.target.value)}
         />
 
-        <br />
+        <br /><br />
         <button onClick={submitFundRequest}>
           Request Funds
         </button>
@@ -76,7 +88,7 @@ function SchemeDashboard() {
       <section style={{ marginBottom: 40 }}>
         <h3>Validate Beneficiary</h3>
 
-        <table border="1" cellPadding="5">
+        <table border="1" cellPadding="6">
           <thead>
             <tr>
               <th>Scheme</th>
@@ -114,19 +126,20 @@ function SchemeDashboard() {
       <section>
         <h3>Allocate Funds to Beneficiary</h3>
 
-        <table border="1" cellPadding="5">
+        <table border="1" cellPadding="6">
           <thead>
             <tr>
               <th>Scheme</th>
               <th>Purpose</th>
               <th>Amount</th>
+              <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
             {requests.filter(r => r.status === "APPROVED").length === 0 && (
               <tr>
-                <td colSpan="3">No approved beneficiaries</td>
+                <td colSpan="4">No approved beneficiaries</td>
               </tr>
             )}
 
@@ -137,6 +150,11 @@ function SchemeDashboard() {
                   <td>{r.scheme}</td>
                   <td>{r.purpose}</td>
                   <td>{r.amount}</td>
+                  <td>
+                    <button onClick={() => allocate(i)}>
+                      Allocate Funds
+                    </button>
+                  </td>
                 </tr>
               ))}
           </tbody>
