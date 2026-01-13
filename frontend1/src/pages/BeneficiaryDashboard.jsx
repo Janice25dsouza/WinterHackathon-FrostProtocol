@@ -14,8 +14,8 @@ function BeneficiaryDashboard() {
     }
 
     addBeneficiaryRequest({
-      scheme,            // "scheme1" | "scheme2"
-      beneficiary,       // "ben1" | "ben2" | "ben3"
+      scheme,
+      beneficiary,
       purpose,
       amount
     });
@@ -28,47 +28,103 @@ function BeneficiaryDashboard() {
   }
 
   return (
-    <div style={{ padding: 30 }}>
-      <h2>Beneficiary Dashboard</h2>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>🎯 Beneficiary Dashboard</h2>
 
-      {/* Scheme selector */}
-      <select value={scheme} onChange={(e) => setScheme(e.target.value)}>
-        <option value="">Select Scheme</option>
-        <option value="scheme1">Scheme 1</option>
-        <option value="scheme2">Scheme 2</option>
-      </select>
+        {/* Scheme selector */}
+        <select
+          style={styles.input}
+          value={scheme}
+          onChange={(e) => setScheme(e.target.value)}
+        >
+          <option value="">Select Scheme</option>
+          <option value="scheme1">Scheme 1</option>
+          <option value="scheme2">Scheme 2</option>
+        </select>
 
-      <br /><br />
+        {/* Beneficiary selector */}
+        <select
+          style={styles.input}
+          value={beneficiary}
+          onChange={(e) => setBeneficiary(e.target.value)}
+        >
+          <option value="">Select Beneficiary</option>
+          <option value="ben1">Beneficiary 1</option>
+          <option value="ben2">Beneficiary 2</option>
+          <option value="ben3">Beneficiary 3</option>
+        </select>
 
-      {/* Beneficiary selector */}
-      <select value={beneficiary} onChange={(e) => setBeneficiary(e.target.value)}>
-        <option value="">Select Beneficiary</option>
-        <option value="ben1">Beneficiary 1</option>
-        <option value="ben2">Beneficiary 2</option>
-        <option value="ben3">Beneficiary 3</option>
-      </select>
+        <input
+          style={styles.input}
+          placeholder="Purpose"
+          value={purpose}
+          onChange={(e) => setPurpose(e.target.value)}
+        />
 
-      <br /><br />
+        <input
+          style={styles.input}
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
 
-      <input
-        placeholder="Purpose"
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-      />
-
-      <br /><br />
-
-      <input
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-
-      <br /><br />
-
-      <button onClick={submitRequest}>Request Funds</button>
+        <button style={styles.button} onClick={submitRequest}>
+          Request Funds
+        </button>
+      </div>
     </div>
   );
 }
+
+/* ================= STYLES ================= */
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#b5c4e1",
+    fontFamily: "Arial, sans-serif",
+  },
+
+  card: {
+    width: 380,
+    background: "#ffffff",
+    borderRadius: 8,
+    padding: 30,
+    boxShadow: "0px 4px 12px rgba(0,0,0,0.15)",
+    textAlign: "center",
+  },
+
+  title: {
+    marginBottom: 20,
+    color: "#333",
+  },
+
+  input: {
+    width: "100%",
+    padding: 10,
+    marginBottom: 12,
+    borderRadius: 5,
+    border: "1px solid #ccc",
+    fontSize: 14,
+    boxSizing: "border-box",
+    appearance: "none",
+  },
+
+  button: {
+    width: "100%",
+    padding: 10,
+    borderRadius: 5,
+    border: "none",
+    background: "#071535",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginTop: 10,
+  },
+};
 
 export default BeneficiaryDashboard;
