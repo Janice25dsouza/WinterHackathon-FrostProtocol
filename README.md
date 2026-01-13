@@ -67,7 +67,12 @@ The platform is built for government authorities, scheme administrators, auditor
 3. Add environment variables  
    Create a `.env` file in the root directory and add:
    ```env
-   ..
+   VITE_FIREBASE_API_KEY=your_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
 
 4. Start the frontend  
    ```bash
@@ -79,9 +84,9 @@ The platform is built for government authorities, scheme administrators, auditor
    ```bash
    npx hardhat node
 
-Deploy smart contracts:
-```bash
-npx hardhat run scripts/deploy.js --network localhost
+6. Deploy smart contracts:
+   ```bash
+   npx hardhat run scripts/deploy.js --network localhost
 
 ---
 
@@ -92,6 +97,7 @@ npx hardhat run scripts/deploy.js --network localhost
 -Johan Colaco
 
 ---
+
 
 
 
