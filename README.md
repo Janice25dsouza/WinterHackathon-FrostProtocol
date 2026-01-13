@@ -48,7 +48,7 @@ The platform is built for government authorities, scheme administrators, auditor
 - Polygon testnet configured in MetaMask
 
 ### Steps to Run Locally
-1. Clone the repository - git clone <repository-url>
+1. Clone the repository - git clone <[repository-url](https://github.com/Janice25dsouza/WinterHackathon-FrostProtocol.git)>
 2. npm install
 3. npx hardhat node (terminal 1)
 4. npx hardhat clean (terminal 2)
