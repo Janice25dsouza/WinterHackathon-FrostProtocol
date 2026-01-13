@@ -1,177 +1,114 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract IntentBasedFundControl {
+contract FundFlowDemo {
 
-    /* ─────────────────────────────────────────────
-       ROLES (3 LEVEL MODEL)
-       CENTRAL → INTERMEDIARY (SCHEME) → BENEFICIARY
-    ───────────────────────────────────────────── */
+    /* ─────────────────────────────
+       BALANCES (ON-CHAIN STORAGE)
+    ───────────────────────────── */
 
-    address public centralAuthority;
+    uint256 public centralBalance = 100000;
 
-    enum Role {
-        NONE,
-        CENTRAL,
-        INTERMEDIARY,
-        BENEFICIARY
-    }
+    uint256 public scheme1Balance;
+    uint256 public scheme2Balance;
 
-    mapping(address => Role) public roles;
+    uint256 public ben1Balance;
+    uint256 public ben2Balance;
+    uint256 public ben3Balance;
 
-    modifier onlyCentral() {
-        require(msg.sender == centralAuthority, "Not central authority");
-        _;
-    }
+    /* ─────────────────────────────
+       EVENTS
+    ───────────────────────────── */
 
-    modifier onlyRole(Role r) {
-        require(roles[msg.sender] == r, "Unauthorized role");
-        _;
-    }
+    event CentralToScheme(string scheme, uint256 amount);
+    event SchemeToBeneficiary(string scheme, string beneficiary, uint256 amount);
 
-    constructor(address _centralGov) {
-        centralAuthority = _centralGov;
-        roles[_centralGov] = Role.CENTRAL;
-    }
+    /* ─────────────────────────────
+       CENTRAL → SCHEME TRANSFER
+    ───────────────────────────── */
 
-    function assignRole(address user, Role role) external onlyCentral {
-        roles[user] = role;
-    }
-
-    /* ─────────────────────────────────────────────
-       INTENT STRUCTURE
-    ───────────────────────────────────────────── */
-
-    struct Intent {
-        uint256 id;
-        uint256 parentId;
-        string purpose;
-        uint256 maxAmount;     // INR smallest unit (paise)
-        uint256 usedAmount;
-        uint256 validUntil;
-        address owner;
-        bool exists;
-    }
-
-    uint256 public intentCounter;
-    mapping(uint256 => Intent) public intents;
-
-    event IntentCreated(
-        uint256 intentId,
-        uint256 parentId,
-        string purpose,
-        uint256 maxAmount,
-        address owner
-    );
-
-    function createIntent(
-        uint256 parentId,
-        string calldata purpose,
-        uint256 maxAmount,
-        uint256 validUntil
+    function approveSchemeFund(
+        string calldata scheme,
+        uint256 amount
     ) external {
+        require(centralBalance >= amount, "Central: insufficient funds");
 
-        if (parentId == 0) {
-            require(roles[msg.sender] == Role.CENTRAL, "Only central can create root");
-        } else {
-            Intent storage parent = intents[parentId];
-            require(parent.exists, "Parent not found");
-            require(parent.owner == msg.sender, "Not parent owner");
-            require(maxAmount <= parent.maxAmount - parent.usedAmount, "Exceeds parent limit");
-            require(validUntil <= parent.validUntil, "Invalid validity");
+        centralBalance -= amount;
+
+        if (keccak256(bytes(scheme)) == keccak256(bytes("scheme1"))) {
+            scheme1Balance += amount;
+        } 
+        else if (keccak256(bytes(scheme)) == keccak256(bytes("scheme2"))) {
+            scheme2Balance += amount;
+        } 
+        else {
+            revert("Invalid scheme");
         }
 
-        intentCounter++;
-
-        intents[intentCounter] = Intent({
-            id: intentCounter,
-            parentId: parentId,
-            purpose: purpose,
-            maxAmount: maxAmount,
-            usedAmount: 0,
-            validUntil: validUntil,
-            owner: msg.sender,
-            exists: true
-        });
-
-        emit IntentCreated(intentCounter, parentId, purpose, maxAmount, msg.sender);
+        emit CentralToScheme(scheme, amount);
     }
 
-    /* ─────────────────────────────────────────────
-       FIAT DISBURSEMENT LOGGING (NEW)
-    ───────────────────────────────────────────── */
+    /* ─────────────────────────────
+       SCHEME → BENEFICIARY TRANSFER
+    ───────────────────────────── */
 
-    struct FiatDisbursement {
-        uint256 id;
-        uint256 intentId;
-        uint256 amount;           // INR (paise)
-        string currency;          // "INR"
-        string bankReference;     // UTR / NEFT / RTGS ID
-        address loggedBy;
-        uint256 timestamp;
-    }
-
-    uint256 public fiatCounter;
-    mapping(uint256 => FiatDisbursement) public fiatLogs;
-
-    event FiatDisbursed(
-        uint256 fiatId,
-        uint256 intentId,
-        uint256 amount,
-        string currency,
-        string bankReference,
-        address loggedBy
-    );
-
-    function logFiatDisbursement(
-        uint256 intentId,
-        uint256 amount,
-        string calldata bankReference
+    function approveBeneficiaryFund(
+        string calldata scheme,
+        string calldata beneficiary,
+        uint256 amount
     ) external {
 
-        Intent storage intent = intents[intentId];
+        if (keccak256(bytes(scheme)) == keccak256(bytes("scheme1"))) {
+            require(scheme1Balance >= amount, "Scheme1: insufficient funds");
+            scheme1Balance -= amount;
+        }
+        else if (keccak256(bytes(scheme)) == keccak256(bytes("scheme2"))) {
+            require(scheme2Balance >= amount, "Scheme2: insufficient funds");
+            scheme2Balance -= amount;
+        }
+        else {
+            revert("Invalid scheme");
+        }
 
-        require(intent.exists, "Invalid intent");
-        require(
-            msg.sender == centralAuthority || msg.sender == intent.owner,
-            "Not authorized"
-        );
+        if (keccak256(bytes(beneficiary)) == keccak256(bytes("ben1"))) {
+            ben1Balance += amount;
+        }
+        else if (keccak256(bytes(beneficiary)) == keccak256(bytes("ben2"))) {
+            ben2Balance += amount;
+        }
+        else if (keccak256(bytes(beneficiary)) == keccak256(bytes("ben3"))) {
+            ben3Balance += amount;
+        }
+        else {
+            revert("Invalid beneficiary");
+        }
 
-        require(intent.usedAmount + amount <= intent.maxAmount, "Exceeds intent limit");
-
-        intent.usedAmount += amount;
-
-        fiatCounter++;
-
-        fiatLogs[fiatCounter] = FiatDisbursement({
-            id: fiatCounter,
-            intentId: intentId,
-            amount: amount,
-            currency: "INR",
-            bankReference: bankReference,
-            loggedBy: msg.sender,
-            timestamp: block.timestamp
-        });
-
-        emit FiatDisbursed(
-            fiatCounter,
-            intentId,
-            amount,
-            "INR",
-            bankReference,
-            msg.sender
-        );
+        emit SchemeToBeneficiary(scheme, beneficiary, amount);
     }
 
-    /* ─────────────────────────────────────────────
+    /* ─────────────────────────────
        READ HELPERS
-    ───────────────────────────────────────────── */
+    ───────────────────────────── */
 
-    function getIntent(uint256 intentId) external view returns (Intent memory) {
-        return intents[intentId];
-    }
-
-    function getFiatLog(uint256 fiatId) external view returns (FiatDisbursement memory) {
-        return fiatLogs[fiatId];
+    function getBalances()
+        external
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        return (
+            centralBalance,
+            scheme1Balance,
+            scheme2Balance,
+            ben1Balance,
+            ben2Balance,
+            ben3Balance
+        );
     }
 }

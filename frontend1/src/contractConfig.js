@@ -1,10 +1,30 @@
 export const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-export const CONTRACT_ABI =[
+export const CONTRACT_ABI = [
     {
       "inputs": [
         {
           "internalType": "address",
-          "name": "_centralGov",
+          "name": "_scheme1",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_scheme2",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_ben1",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_ben2",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_ben3",
           "type": "address"
         }
       ],
@@ -12,84 +32,111 @@ export const CONTRACT_ABI =[
       "type": "constructor"
     },
     {
-      "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "fiatId",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
         },
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "intentId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "currency",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "bankReference",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "loggedBy",
-          "type": "address"
         }
       ],
-      "name": "FiatDisbursed",
-      "type": "event"
+      "name": "approveBeneficiaryFund",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "intentId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "parentId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "purpose",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "maxAmount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
           "internalType": "address",
-          "name": "owner",
+          "name": "scheme",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "approveSchemeFund",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
           "type": "address"
         }
       ],
-      "name": "IntentCreated",
-      "type": "event"
+      "name": "balance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ben1",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ben2",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ben3",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "central",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -97,233 +144,14 @@ export const CONTRACT_ABI =[
           "internalType": "address",
           "name": "user",
           "type": "address"
-        },
-        {
-          "internalType": "enum IntentBasedFundControl.Role",
-          "name": "role",
-          "type": "uint8"
         }
       ],
-      "name": "assignRole",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "centralAuthority",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "parentId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "purpose",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "maxAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "validUntil",
-          "type": "uint256"
-        }
-      ],
-      "name": "createIntent",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "fiatCounter",
+      "name": "getBalance",
       "outputs": [
         {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "fiatLogs",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "intentId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "currency",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "bankReference",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "loggedBy",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "timestamp",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "fiatId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getFiatLog",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "intentId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "currency",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "bankReference",
-              "type": "string"
-            },
-            {
-              "internalType": "address",
-              "name": "loggedBy",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "timestamp",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct IntentBasedFundControl.FiatDisbursement",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "intentId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getIntent",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "parentId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "purpose",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxAmount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "usedAmount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "validUntil",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "owner",
-              "type": "address"
-            },
-            {
-              "internalType": "bool",
-              "name": "exists",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct IntentBasedFundControl.Intent",
-          "name": "",
-          "type": "tuple"
         }
       ],
       "stateMutability": "view",
@@ -331,111 +159,28 @@ export const CONTRACT_ABI =[
     },
     {
       "inputs": [],
-      "name": "intentCounter",
+      "name": "scheme1",
       "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "intents",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "parentId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "purpose",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "maxAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "usedAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "validUntil",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "exists",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "intentId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "bankReference",
-          "type": "string"
-        }
-      ],
-      "name": "logFiatDisbursement",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
         {
           "internalType": "address",
           "name": "",
           "type": "address"
         }
       ],
-      "name": "roles",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "scheme2",
       "outputs": [
         {
-          "internalType": "enum IntentBasedFundControl.Role",
+          "internalType": "address",
           "name": "",
-          "type": "uint8"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
       "type": "function"
     }
-  ];
+  ]

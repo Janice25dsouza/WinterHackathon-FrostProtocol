@@ -1,21 +1,12 @@
 const hre = require("hardhat");
 
 async function main() {
-  const [deployer] = await hre.ethers.getSigners();
+  const FundFlowDemo = await hre.ethers.getContractFactory("FundFlowDemo");
 
-  console.log("Deploying with account:", deployer.address);
+  const contract = await FundFlowDemo.deploy();
+  await contract.waitForDeployment();
 
-  const ContractFactory = await hre.ethers.getContractFactory(
-    "IntentBasedFundControl"
-  );
-
-  const contract = await ContractFactory.deploy(deployer.address);
-
-  await contract.waitForDeployment();   // ✅ Ethers v6 fix
-
-  const contractAddress = await contract.getAddress();
-
-  console.log("Contract deployed to:", contractAddress);
+  console.log("FundFlowDemo deployed to:", await contract.getAddress());
 }
 
 main().catch((error) => {

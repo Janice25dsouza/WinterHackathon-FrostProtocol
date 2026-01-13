@@ -1,15 +1,25 @@
 import { useState } from "react";
 
-// Central fund requests
 import { addRequest } from "../data/schemeRequests";
 
-// Beneficiary requests
 import {
   getBeneficiaryRequests,
   approveBeneficiary,
   rejectBeneficiary,
   markDisbursed
 } from "../data/beneficiaryRequests";
+
+import { getContract } from "../utils/getContract";
+
+async function allocateFunds(beneficiaryAddress, amount) {
+  const contract = await getContract();
+  const tx = await contract.approveBeneficiaryFund(
+    beneficiaryAddress,
+    amount
+  );
+  await tx.wait();
+  alert("✅ Beneficiary funded");
+}
 
 function SchemeDashboard() {
 
@@ -24,16 +34,17 @@ function SchemeDashboard() {
     }
 
     addRequest({
-      scheme: "Scheme User",
+      scheme: "scheme1",
       purpose,
       amount,
       timestamp: Date.now(),
     });
 
-    alert("Fund request sent to Central Government");
+    alert("✅ Request sent to Central Government");
     setPurpose("");
     setAmount("");
   }
+
 
   /* ================= BENEFICIARY FLOW ================= */
   const [requests, setRequests] = useState(getBeneficiaryRequests());
@@ -52,10 +63,26 @@ function SchemeDashboard() {
     refresh();
   }
 
-  function allocate(index) {
-    markDisbursed(index);
-    refresh();
-    alert("Funds allocated to beneficiary");
+  async function allocate(index) {
+    try {
+      const req = requests[index];
+      const contract = await getContract();
+
+      const tx = await contract.approveAndTransfer(
+        req.intentId,
+        Number(req.amount)
+      );
+
+      await tx.wait();
+
+      markDisbursed(index);
+      refresh();
+
+      alert("✅ Funds transferred to beneficiary!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Blockchain transfer failed");
+    }
   }
 
   return (
@@ -73,7 +100,7 @@ function SchemeDashboard() {
         />
 
         <input
-          placeholder="Amount (paise)"
+          placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
@@ -101,7 +128,7 @@ function SchemeDashboard() {
           <tbody>
             {requests.filter(r => r.status === "PENDING").length === 0 && (
               <tr>
-                <td colSpan="4">No pending beneficiary requests</td>
+                <td colSpan="4">No pending requests</td>
               </tr>
             )}
 
@@ -151,9 +178,17 @@ function SchemeDashboard() {
                   <td>{r.purpose}</td>
                   <td>{r.amount}</td>
                   <td>
-                    <button onClick={() => allocate(i)}>
+                    <button
+                      onClick={() =>
+                        allocateFunds(
+                          BENEFICIARY_MAP[r.beneficiary],
+                          r.amount
+                        )
+                      }
+                    >
                       Allocate Funds
                     </button>
+
                   </td>
                 </tr>
               ))}

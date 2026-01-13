@@ -1,4 +1,5 @@
-#  Intent Based Fund Flow using Blockchain
+e#  Intent Based Fund Flow using Blockchain
+
 
 This project uses smart contracts to enforce intent-based fund control in hierarchical systems. This prototype uses a three-level structure—Central Authority, Intermediaries, and Beneficiaries—ensuring funds are used only for predefined purposes.
 

@@ -1,10 +1,12 @@
 import { ethers } from "ethers";
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../contractConfig";
+import ABI from "../abi/FundFlowDemo.json";
 
-export const getContract = async () => {
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // redeploy = update
+
+export async function getContract() {
   if (!window.ethereum) {
-    alert("MetaMask not installed");
-    return null;
+    alert("Please install MetaMask");
+    return;
   }
 
   await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -14,7 +16,7 @@ export const getContract = async () => {
 
   return new ethers.Contract(
     CONTRACT_ADDRESS,
-    CONTRACT_ABI,
+    ABI.abi, // 🔥 IMPORTANT
     signer
   );
-};
+}
