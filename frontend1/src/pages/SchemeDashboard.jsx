@@ -11,16 +11,6 @@ import {
 
 import { getContract } from "../utils/getContract";
 
-async function allocateFunds(beneficiaryAddress, amount) {
-  const contract = await getContract();
-  const tx = await contract.approveBeneficiaryFund(
-    beneficiaryAddress,
-    amount
-  );
-  await tx.wait();
-  alert("✅ Beneficiary funded");
-}
-
 function SchemeDashboard() {
 
   /* ================= CENTRAL FUND REQUEST ================= */
@@ -45,7 +35,6 @@ function SchemeDashboard() {
     setAmount("");
   }
 
-
   /* ================= BENEFICIARY FLOW ================= */
   const [requests, setRequests] = useState(getBeneficiaryRequests());
 
@@ -64,26 +53,29 @@ function SchemeDashboard() {
   }
 
   async function allocate(index) {
-    try {
-      const req = requests[index];
-      const contract = await getContract();
+  try {
+    const req = requests[index];
+    const contract = await getContract();
 
-      const tx = await contract.approveAndTransfer(
-        req.intentId,
-        Number(req.amount)
-      );
+    // ✅ Call correct smart contract function
+    const tx = await contract.approveBeneficiaryFund(
+      "scheme1",                 // scheme name
+      req.beneficiary,           // ben1 / ben2 / ben3
+      Number(req.amount)
+    );
 
-      await tx.wait();
+    await tx.wait();
 
-      markDisbursed(index);
-      refresh();
+    markDisbursed(index);
+    refresh();
 
-      alert("✅ Funds transferred to beneficiary!");
-    } catch (err) {
-      console.error(err);
-      alert("❌ Blockchain transfer failed");
-    }
+    alert("✅ Funds transferred to beneficiary!");
+  } catch (err) {
+    console.error("Blockchain error:", err);
+    alert("❌ Blockchain transfer failed");
   }
+}
+
 
   return (
     <div style={{ padding: 30 }}>
@@ -178,17 +170,9 @@ function SchemeDashboard() {
                   <td>{r.purpose}</td>
                   <td>{r.amount}</td>
                   <td>
-                    <button
-                      onClick={() =>
-                        allocateFunds(
-                          BENEFICIARY_MAP[r.beneficiary],
-                          r.amount
-                        )
-                      }
-                    >
+                    <button onClick={() => allocate(i)}>
                       Allocate Funds
                     </button>
-
                   </td>
                 </tr>
               ))}
