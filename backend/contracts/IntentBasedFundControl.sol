@@ -23,6 +23,16 @@ contract FundFlowDemo {
     event CentralToScheme(string scheme, uint256 amount);
     event SchemeToBeneficiary(string scheme, string beneficiary, uint256 amount);
 
+    // ✅ AUTO LOG BALANCE SNAPSHOT
+    event BalanceSnapshot(
+        uint256 central,
+        uint256 scheme1,
+        uint256 scheme2,
+        uint256 ben1,
+        uint256 ben2,
+        uint256 ben3
+    );
+
     /* ─────────────────────────────
        CENTRAL → SCHEME TRANSFER
     ───────────────────────────── */
@@ -46,6 +56,16 @@ contract FundFlowDemo {
         }
 
         emit CentralToScheme(scheme, amount);
+
+        // ✅ LOG CURRENT STATE
+        emit BalanceSnapshot(
+            centralBalance,
+            scheme1Balance,
+            scheme2Balance,
+            ben1Balance,
+            ben2Balance,
+            ben3Balance
+        );
     }
 
     /* ─────────────────────────────
@@ -84,6 +104,16 @@ contract FundFlowDemo {
         }
 
         emit SchemeToBeneficiary(scheme, beneficiary, amount);
+
+        // ✅ LOG CURRENT STATE
+        emit BalanceSnapshot(
+            centralBalance,
+            scheme1Balance,
+            scheme2Balance,
+            ben1Balance,
+            ben2Balance,
+            ben3Balance
+        );
     }
 
     /* ─────────────────────────────
