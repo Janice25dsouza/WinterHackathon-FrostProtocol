@@ -9,12 +9,6 @@ The platform is built for government authorities, scheme administrators, auditor
 
 ---
 
-## Demo Video Link: 
-
-**https://www.youtube.com/watch?v=XD52vEkCCeY&feature=youtu.be**
-
----
-
 ## Features
 - **Intent-Based Fund Allocation** – Funds are issued with a purpose that cannot be violated
 - **Hierarchical Approval Flow** – Central authority approves and allocates funds to schemes, which further distribute to beneficiaries
